@@ -16,6 +16,7 @@ O projeto é inspirado no **Reddit**, uma rede social baseada em fóruns onde os
   <img src="./assets/imagens/Reddit_screenshot.png" alt="redditscreenshot" width="600">
 </p>
 
+
 <font size="2"><p style="text-align: center">Fonte: <a href="http://en.wikipedia.org/wiki/Reddit" target="_blank">Wikipedia</a>, 2026.</p></font>
 
 Adaptando essa lógica para a realidade da **FCTE/UnB**, idealizamos uma plataforma voltada para a colaboração acadêmica, resolvendo o problema da informação fragmentada em grupos de mensagens que se perdem com o tempo.
