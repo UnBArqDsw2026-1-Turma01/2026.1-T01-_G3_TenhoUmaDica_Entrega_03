@@ -1,22 +1,18 @@
-import { randomUUID } from 'crypto';
-
 export class Usuario {
   readonly id: string;
   foto: string;
   nome: string;
   email: string;
-  senha: string;
   bio: string;
   readonly dataCadastro: Date;
   disciplinaSalva: string[] = [];
   topicoSalvo: string[] = [];
   conteudoSalvo: string[] = [];
 
-  constructor(nome: string, email: string, senha: string, bio = '', foto = '') {
-    this.id = randomUUID();
+  constructor(uid: string, nome: string, email: string, bio = '', foto = '') {
+    this.id = uid;
     this.nome = nome;
     this.email = email;
-    this.senha = senha;
     this.bio = bio;
     this.foto = foto;
     this.dataCadastro = new Date();
@@ -24,11 +20,6 @@ export class Usuario {
 
   autenticar(): void {
     console.log(`[Usuario] autenticando ${this.email}`);
-  }
-
-  alterarSenha(novaSenha: string): void {
-    console.log(`[Usuario] alterando senha de ${this.email}`);
-    this.senha = novaSenha;
   }
 
   salvarDisciplina(disciplinaId: string): void {
