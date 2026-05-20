@@ -12,6 +12,11 @@ export class AlunoBuilder implements UsuarioBuilder {
     this.aluno = {};
   }
 
+  public setId(id: string): this {
+    this.aluno.id = id;
+    return this;
+  }
+
   public setNome(nome: string): this {
     this.aluno.nome = nome;
     return this;
@@ -19,11 +24,6 @@ export class AlunoBuilder implements UsuarioBuilder {
 
   public setEmail(email: string): this {
     this.aluno.email = email;
-    return this;
-  }
-
-  public setSenha(senha: string): this {
-    this.aluno.senha = senha;
     return this;
   }
 

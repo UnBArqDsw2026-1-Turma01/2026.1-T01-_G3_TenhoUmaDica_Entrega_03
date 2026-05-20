@@ -12,6 +12,10 @@ export class AdministradorBuilder implements UsuarioBuilder {
     this.admin = {};
   }
 
+  public setId(id: string): this {
+    this.admin.id = id;
+    return this;
+  }
   public setNome(nome: string): this {
     this.admin.nome = nome;
     return this;
@@ -19,11 +23,6 @@ export class AdministradorBuilder implements UsuarioBuilder {
 
   public setEmail(email: string): this {
     this.admin.email = email;
-    return this;
-  }
-
-  public setSenha(senha: string): this {
-    this.admin.senha = senha;
     return this;
   }
 
