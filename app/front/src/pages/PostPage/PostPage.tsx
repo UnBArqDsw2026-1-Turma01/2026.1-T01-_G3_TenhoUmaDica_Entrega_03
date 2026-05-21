@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../AvaliacoesPage/AvaliacoesPage.css';
 import { FirebaseAuthModal } from '../../components/FirebaseAuthModal';
+import { loadDebugToken } from '../../utils/firebaseDebugToken';
 
 // Interface que espelha os dados que vêm do NestJS (.toJSON() do seu modelo)
 interface IPost {
@@ -23,7 +24,7 @@ export default function PostPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newTopicTitle, setNewTopicTitle] = useState("");
   const [newTopicText, setNewTopicText] = useState("");
-  const [debugToken, setDebugToken] = useState("");
+  const [debugToken, setDebugToken] = useState(() => loadDebugToken());
 
   // Estados do Modal de Auth Firebase
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -209,7 +210,11 @@ export default function PostPage() {
                       <LikeIcon />
                       {post.contadorCurtida}
                     </button>
-                    <button type="button" className="action-chip ghost">
+                    <button
+                      type="button"
+                      className="action-chip ghost"
+                      onClick={() => navigate(`/posts/${post.id}`)}
+                    >
                       <MessageIcon />
                       Responder
                     </button>

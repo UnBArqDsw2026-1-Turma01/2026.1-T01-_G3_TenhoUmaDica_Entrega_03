@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AvaliacoesPage.css";
 import { FirebaseAuthModal } from "../../components/FirebaseAuthModal";
+import { loadDebugToken } from "../../utils/firebaseDebugToken";
 
 type ScopeFilter = "todos" | "professor" | "materia";
 
@@ -27,7 +28,7 @@ export function AvaliacoesPage() {
   const [newReviewTitle, setNewReviewTitle] = useState("");
   const [newReviewText, setNewReviewText] = useState("");
   const [newReviewRating, setNewReviewRating] = useState(5);
-  const [debugToken, setDebugToken] = useState("");
+  const [debugToken, setDebugToken] = useState(() => loadDebugToken());
 
   // Estados do Modal de Auth Firebase
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -252,7 +253,11 @@ export function AvaliacoesPage() {
                       <LikeIcon />
                       {review.contadorCurtida}
                     </button>
-                    <button type="button" className="action-chip ghost">
+                    <button
+                      type="button"
+                      className="action-chip ghost"
+                      onClick={() => navigate(`/posts/${review.id}`)}
+                    >
                       <MessageIcon />
                       Responder
                     </button>

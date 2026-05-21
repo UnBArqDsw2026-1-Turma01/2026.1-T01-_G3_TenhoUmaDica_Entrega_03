@@ -10,9 +10,10 @@ export class Comentario implements ComponenteComentario {
   private contadorCurtida: number;
   private contadorDislike: number;
   private idPostRaiz?: string;
+  private idComentarioPai?: string;
   private threadComentario: ThreadComentario;
 
-  constructor(texto: string, idCriador: string, idPostRaiz?: string) {
+  constructor(texto: string, idCriador: string, idPostRaiz?: string, idComentarioPai?: string) {
     this.id = randomUUID();
     this.texto = texto;
     this.idCriador = idCriador;
@@ -20,6 +21,7 @@ export class Comentario implements ComponenteComentario {
     this.contadorCurtida = 0;
     this.contadorDislike = 0;
     this.idPostRaiz = idPostRaiz;
+    this.idComentarioPai = idComentarioPai;
     this.threadComentario = new ThreadComentario();
   }
 
@@ -71,6 +73,7 @@ export class Comentario implements ComponenteComentario {
       id: this.id,
       idCriador: this.idCriador,
       idPostRaiz: this.idPostRaiz,
+      idComentarioPai: this.idComentarioPai,
       texto: this.texto,
       dataCriacao: this.dataCriacao,
       contadorCurtida: this.contadorCurtida,

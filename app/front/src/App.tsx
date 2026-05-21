@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { AvaliacoesPage } from "./pages/AvaliacoesPage/AvaliacoesPage";
-import PostPage from "./pages/PostPage/post";
+import PostPage from "./pages/PostPage/PostPage";
+import PostThreadPage from "./pages/PostPage/PostThreadPage";
 
 function Catalog() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Catalog />} />
         <Route path="/avaliacoes" element={<AvaliacoesPage />} />
+        <Route path="/posts/:postId" element={<PostThreadPage />} />
         <Route path="/posts" element={<PostPage />} />
       </Routes>
     </BrowserRouter>

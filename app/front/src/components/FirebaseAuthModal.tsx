@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../pages/AvaliacoesPage/AvaliacoesPage.css';
+import { saveDebugToken } from '../utils/firebaseDebugToken';
 
 interface FirebaseAuthModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export function FirebaseAuthModal({ isOpen, onClose, onTokenReceived }: Firebase
       const data = await response.json();
 
       if (response.ok && data.idToken) {
+        saveDebugToken(data.idToken);
         onTokenReceived(data.idToken);
         onClose();
         setFirebasePassword("123456"); // Resetando pro default após uso
@@ -62,7 +64,6 @@ export function FirebaseAuthModal({ isOpen, onClose, onTokenReceived }: Firebase
           <input 
             type="text" 
             className="modal-input" 
-            placeholder="Ex: AIzaSyB..."
             value={firebaseApiKey}
             onChange={(e) => setFirebaseApiKey(e.target.value)}
             required
