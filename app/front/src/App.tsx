@@ -7,12 +7,10 @@ function Catalog() {
     <div style={{ padding: "2rem", fontFamily: "sans-serif", textAlign: "center" }}>
       <h1>Catálogo de Funcionalidades</h1>
       <p>Selecione uma das páginas abaixo para visualizar:</p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "2rem", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "2rem", flexWrap: "wrap"}}>
         <Link to="/posts" style={linkStyle}>
-          post: tópico
-        </Link>
-        <Link to="/avaliacoes" style={linkStyle}>
-          post: avaliações
+          Post: Tópicos, Conteúdos, Avaliações
+          <p>OBS: Funcionalidade de Conteúdos e de Comentários a implementar. Sem persistência. </p>
         </Link>
       </div>
     </div>

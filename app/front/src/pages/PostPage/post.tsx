@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../AvaliacoesPage/AvaliacoesPage.css';
+import { FirebaseAuthModal } from '../../components/FirebaseAuthModal';
 
 // Interface que espelha os dados que vêm do NestJS (.toJSON() do seu modelo)
 interface IPost {
   id: string;
+  tipo: string;
   texto: string;
   descricao: string;
   dataCriacao: string;
@@ -17,17 +19,60 @@ export default function PostPage() {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [query, setQuery] = useState("");
 
+  // Estados do Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newTopicTitle, setNewTopicTitle] = useState("");
+  const [newTopicText, setNewTopicText] = useState("");
+  const [debugToken, setDebugToken] = useState("");
+
+  // Estados do Modal de Auth Firebase
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   // useEffect roda essa função assim que a página é carregada pela primeira vez
   useEffect(() => {
     fetch('http://localhost:3000/posts')
       .then(response => response.json())
-      .then(data => setPosts(data))
+      .then((data: IPost[]) => {
+        const topicos = data.filter(post => post.tipo === 'topico');
+        setPosts(topicos);
+      })
       .catch(err => console.error("Erro ao carregar posts:", err));
   }, []);
 
-  // Estado provisório simulando a chamada ao back-end
   const handleAddTopic = () => {
-    alert("🚀 Aqui será feita a requisição POST para /posts/comentario\n\nNeste momento a aplicação pegaria o Título e Texto digitados em um modal e enviaria junto com o Token do Firebase para o NestJS!");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewTopicTitle("");
+    setNewTopicText("");
+    setDebugToken("");
+  };
+
+  const handleSubmitTopic = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:3000/posts/topico', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${debugToken}`,
+        },
+        body: JSON.stringify({ texto: newTopicText, descricao: newTopicTitle })
+      });
+      
+      if (response.ok) {
+        const newlyCreatedPost = await response.json();
+        setPosts(prev => [newlyCreatedPost, ...prev]);
+        handleCloseModal();
+      } else {
+        alert("Erro ao criar tópico. Verifique se o Token é válido e se a API está online.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Falha na requisição!");
+    }
   };
 
   const visiblePosts = posts.filter(post => {
@@ -175,6 +220,95 @@ export default function PostPage() {
           </div>
         </section>
       </main>
+
+      {/* Modal de Adicionar Tópico */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <form className="modal-container" onSubmit={handleSubmitTopic}>
+            <div className="modal-header">
+              <h2>Novo Tópico</h2>
+              <button type="button" className="modal-close-btn" onClick={handleCloseModal}>
+                &times;
+              </button>
+            </div>
+            
+            <div className="modal-form-group">
+              <label>Título do Tópico</label>
+              <input 
+                type="text" 
+                className="modal-input" 
+                placeholder="Ex: Como isolar essa variável em Limites?"
+                value={newTopicTitle}
+                onChange={(e) => setNewTopicTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-form-group">
+              <label>Conteúdo</label>
+              <textarea 
+                className="modal-input" 
+                placeholder="Descreva sua dúvida, código ou imagem..."
+                value={newTopicText}
+                onChange={(e) => setNewTopicText(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-toolbar">
+              <button type="button" className="modal-toolbar-btn">Inserir Imagem</button>
+              <button type="button" className="modal-toolbar-btn">Anexo</button>
+            </div>
+
+            <div className="modal-form-group" style={{ marginTop: 'auto' }}>
+              <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>🚨 DEBUG: UID do Firebase</span>
+                <button 
+                  type="button" 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  style={{
+                    background: '#f6b41a',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '2px 8px',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    color: '#fff'
+                  }}
+                >
+                  Gerar Token Rest API
+                </button>
+              </label>
+              <input 
+                type="text" 
+                className="modal-input" 
+                placeholder="Ex: bearer-fake-uid ou token real"
+                style={{ fontFamily: 'monospace', fontSize: '12px' }}
+                value={debugToken}
+                onChange={(e) => setDebugToken(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="modal-btn modal-btn-cancel" onClick={handleCloseModal}>
+                Cancelar
+              </button>
+              <button type="submit" className="modal-btn modal-btn-submit">
+                Publicar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal de Autenticação Firebase do DEBUG */}
+      <FirebaseAuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onTokenReceived={(token) => setDebugToken(token)} 
+      />
     </div>
   );
 }

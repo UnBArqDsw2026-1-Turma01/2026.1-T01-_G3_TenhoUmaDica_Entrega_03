@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AvaliacoesPage.css";
+import { FirebaseAuthModal } from "../../components/FirebaseAuthModal";
 
 type ScopeFilter = "todos" | "professor" | "materia";
 
@@ -21,6 +22,16 @@ export function AvaliacoesPage() {
   const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("todos");
   const [query, setQuery] = useState("");
 
+  // Estados do Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newReviewTitle, setNewReviewTitle] = useState("");
+  const [newReviewText, setNewReviewText] = useState("");
+  const [newReviewRating, setNewReviewRating] = useState(5);
+  const [debugToken, setDebugToken] = useState("");
+
+  // Estados do Modal de Auth Firebase
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   useEffect(() => {
     fetch('http://localhost:3000/posts')
       .then(response => response.json())
@@ -30,6 +41,43 @@ export function AvaliacoesPage() {
       })
       .catch(err => console.error("Erro ao carregar avaliações:", err));
   }, []);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewReviewTitle("");
+    setNewReviewText("");
+    setNewReviewRating(5);
+    setDebugToken("");
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:3000/posts/avaliacao', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${debugToken}`,
+        },
+        body: JSON.stringify({ 
+          texto: newReviewText, 
+          descricao: newReviewTitle,
+          avaliacao: newReviewRating
+        })
+      });
+      
+      if (response.ok) {
+        const newlyCreatedPost = await response.json();
+        setReviews(prev => [newlyCreatedPost, ...prev]);
+        handleCloseModal();
+      } else {
+        alert("Erro ao criar avaliação. Verifique se o Token é válido e se a API está online.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Falha na requisição!");
+    }
+  };
 
   const visibleReviews = reviews.filter((review) => {
     // Como os dados reais não têm mais autor.papel nem disciplina, ignoramos filtro de escopo ou estendemos depois.
@@ -151,7 +199,11 @@ export function AvaliacoesPage() {
               >
                 Matéria
               </button>
-              <button type="button" className="chip primary">
+              <button 
+                type="button" 
+                className="chip primary"
+                onClick={() => setIsModalOpen(true)}
+              >
                 <PlusIcon />
                 Nova avaliacao
               </button>
@@ -216,6 +268,110 @@ export function AvaliacoesPage() {
           </div>
         </section>
       </main>
+
+      {/* Modal de Criação de Avaliação */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <form className="modal-container" onSubmit={handleSubmitReview}>
+            <div className="modal-header">
+              <h2>Nova Avaliação</h2>
+              <button type="button" className="modal-close-btn" onClick={handleCloseModal}>
+                &times;
+              </button>
+            </div>
+            
+            <div className="modal-form-group">
+              <label>Título da Avaliação</label>
+              <input 
+                type="text" 
+                className="modal-input" 
+                placeholder="Qual o resumo da sua experiência?" 
+                value={newReviewTitle}
+                onChange={(e) => setNewReviewTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-form-group">
+              <label>Sua nota</label>
+              <div className="modal-toolbar" style={{ border: 'none', padding: 0, justifyContent: 'flex-start', gap: '8px' }}>
+                {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                    onClick={() => setNewReviewRating(star)}
+                    aria-label={`Nota ${star}`}
+                  >
+                    <StarIcon filled={star <= newReviewRating} />
+                  </button>
+                ))}
+                <span style={{ marginLeft: '8px', fontSize: '14px', color: '#64748b' }}>
+                  {newReviewRating} de 5
+                </span>
+              </div>
+            </div>
+
+            <div className="modal-form-group">
+              <label>Detalhes</label>
+              <textarea 
+                className="modal-input" 
+                placeholder="Conte-nos mais sobre a matéria, o professor e sua nota..."
+                value={newReviewText}
+                onChange={(e) => setNewReviewText(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-form-group" style={{ marginTop: 'auto' }}>
+              <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>🚨 DEBUG: UID do Firebase</span>
+                <button 
+                  type="button" 
+                  onClick={() => setIsAuthModalOpen(true)}
+                  style={{
+                    background: '#f6b41a',
+                    border: 'none',
+                    borderRadius: '4px',
+                    padding: '2px 8px',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    color: '#fff'
+                  }}
+                >
+                  Gerar Token Rest API
+                </button>
+              </label>
+              <input 
+                type="text" 
+                className="modal-input" 
+                placeholder="Ex: bearer-fake-uid ou token real"
+                style={{ fontFamily: 'monospace', fontSize: '12px' }}
+                value={debugToken}
+                onChange={(e) => setDebugToken(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="modal-btn modal-btn-cancel" onClick={handleCloseModal}>
+                Cancelar
+              </button>
+              <button type="submit" className="modal-btn modal-btn-submit">
+                Avaliar
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal de Autenticação Firebase do DEBUG */}
+      <FirebaseAuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onTokenReceived={(token) => setDebugToken(token)} 
+      />
     </div>
   );
 }

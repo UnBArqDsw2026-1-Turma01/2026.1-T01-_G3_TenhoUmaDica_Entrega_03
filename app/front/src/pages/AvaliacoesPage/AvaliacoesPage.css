@@ -546,4 +546,131 @@
   .rating-stars {
     margin-left: 34px;
   }
+}/* Modal Overlay & Container */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 30, 52, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-container {
+  background: #ffffff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 20px 40px rgba(8, 20, 36, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #173c69;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: #8793a4;
+  cursor: pointer;
+}
+
+.modal-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-form-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #39506b;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(19, 39, 69, 0.16);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #22354d;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.modal-input:focus {
+  border-color: #0e3f80;
+}
+
+textarea.modal-input {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(19, 39, 69, 0.1);
+  background: #f8fafe;
+  color: #4b637d;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: not-allowed;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: filter 0.2s;
+}
+
+.modal-btn:hover {
+  filter: brightness(0.95);
+}
+
+.modal-btn-cancel {
+  background: #f1f6fc;
+  color: #4a6178;
+}
+
+.modal-btn-submit {
+  background: #0e3f80;
+  color: #fff;
 }
