@@ -12,11 +12,11 @@ export class PostsController {
     return this.postsService.listarPosts();
   }
 
-  @Post('comentario')
+  @Post('topico')
   @UseGuards(AuthGuard)
-  criarComentario(@Body() body: { texto: string; descricao: string }, @Req() req: any) {
+  criarTopico(@Body() body: { texto: string; descricao: string }, @Req() req: any) {
     const criador = new Usuario(req.user.uid, req.user.name, req.user.email);
-    return this.postsService.criarPostComentario(body.texto, body.descricao, criador).toJSON();
+    return this.postsService.criarPostTopico(body.texto, body.descricao, criador).toJSON();
   }
 
   @Post('material')

@@ -1,10 +1,10 @@
 import { FabricaConteudo } from './fabrica-conteudo.factory';
-import { PostComentario } from '../models/post-comentario.model';
+import { PostTopico } from '../models/post-topico.model';
 import { PostConteudo } from '../models/post-conteudo.model';
 import { Usuario } from '../../usuarios/usuario.model';
 
-export class FabricaComentario extends FabricaConteudo {
+export class FabricaTopico extends FabricaConteudo {
   criarPost(texto: string, descricao: string, criador: Usuario): PostConteudo {
-    return new PostComentario(texto, descricao, criador);
+    return new PostTopico(texto, descricao, criador);
   }
 }

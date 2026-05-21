@@ -1,107 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./AvaliacoesPage.css";
 
 type ScopeFilter = "todos" | "professor" | "materia";
 
 type ReviewPost = {
   id: string;
-  tipo: "avaliacao" | "comentario" | "material";
+  tipo: string;
   texto: string;
   descricao: string;
   dataCriacao: string;
   contadorCurtida: number;
   idCriador: string;
-  autor: {
-    nome: string;
-    foto: string;
-    papel: string;
-    badge: string;
-  };
-  disciplina: string;
-  topico: string;
-  avaliacao: number;
+  avaliacao?: number;
 };
 
-const reviews: ReviewPost[] = [
-  {
-    id: "post-avaliacao-001",
-    tipo: "avaliacao",
-    texto: "Matéria quase me fez vencer na matéria, o professor explica super bem.",
-    descricao: "Avaliação do primeiro bimestre em Cálculo 1.",
-    dataCriacao: "há 2 semanas",
-    contadorCurtida: 12,
-    idCriador: "uid-001",
-    autor: {
-      nome: "Cicero M.",
-      foto: "C",
-      papel: "Professor",
-      badge: "Monitor",
-    },
-    disciplina: "Cálculo 1",
-    topico: "Limites e derivadas",
-    avaliacao: 5,
-  },
-  {
-    id: "post-avaliacao-002",
-    tipo: "avaliacao",
-    texto: "Material muito claro, o professor conecta teoria com exercício sem enrolação.",
-    descricao: "Comentário sobre a sequência de listas e material de apoio.",
-    dataCriacao: "há 1 semana",
-    contadorCurtida: 8,
-    idCriador: "uid-002",
-    autor: {
-      nome: "Marina S.",
-      foto: "M",
-      papel: "Aluna",
-      badge: "Monitor",
-    },
-    disciplina: "Cálculo 1",
-    topico: "Material de apoio",
-    avaliacao: 5,
-  },
-  {
-    id: "post-avaliacao-003",
-    tipo: "avaliacao",
-    texto: "As aulas ajudam bastante, mas senti falta de mais exemplos resolvidos no quadro.",
-    descricao: "Sugestão enviada pela turma para a disciplina.",
-    dataCriacao: "há 4 dias",
-    contadorCurtida: 6,
-    idCriador: "uid-003",
-    autor: {
-      nome: "Lucas P.",
-      foto: "L",
-      papel: "Aluno",
-      badge: "Visto",
-    },
-    disciplina: "Cálculo 1",
-    topico: "Metodologia",
-    avaliacao: 4,
-  },
-];
-
 export function AvaliacoesPage() {
+  const navigate = useNavigate();
+  const [reviews, setReviews] = useState<ReviewPost[]>([]);
   const [scopeFilter, setScopeFilter] = useState<ScopeFilter>("todos");
   const [query, setQuery] = useState("");
 
+  useEffect(() => {
+    fetch('http://localhost:3000/posts')
+      .then(response => response.json())
+      .then((data: ReviewPost[]) => {
+        const avaliacoes = data.filter(post => post.tipo === 'avaliacao');
+        setReviews(avaliacoes);
+      })
+      .catch(err => console.error("Erro ao carregar avaliações:", err));
+  }, []);
+
   const visibleReviews = reviews.filter((review) => {
-    const matchesScope =
-      scopeFilter === "todos" ||
-      (scopeFilter === "professor" && review.autor.papel === "Professor") ||
-      (scopeFilter === "materia" && review.disciplina === "Cálculo 1");
+    // Como os dados reais não têm mais autor.papel nem disciplina, ignoramos filtro de escopo ou estendemos depois.
+    const matchesScope = true; 
 
     const normalizedQuery = query.trim().toLowerCase();
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      [
-        review.texto,
-        review.descricao,
-        review.autor.nome,
-        review.disciplina,
-        review.topico,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery);
+    const searchSpace = [
+      review.texto,
+      review.descricao,
+      review.idCriador
+    ].join(" ").toLowerCase();
+    const matchesQuery = normalizedQuery.length === 0 || searchSpace.includes(normalizedQuery);
 
     return matchesScope && matchesQuery;
   });
@@ -155,7 +95,7 @@ export function AvaliacoesPage() {
               <p>
                 Disciplina fundamental para todas as engenharias. Aborda funções reais,
                 limites e continuidade, derivadas e suas aplicações, e introdução às
-                integrais.
+                integrais. Pré-requisito para Cálculo 2.
               </p>
             </div>
 
@@ -168,14 +108,14 @@ export function AvaliacoesPage() {
         </section>
 
         <section className="screen-tabs" aria-label="Seções do curso">
-          <button type="button" className="tab-button">
-            Forum
+          <button type="button" className="tab-button" onClick={() => navigate('/posts')}>
+            Fórum
           </button>
           <button type="button" className="tab-button">
-            Conteudos
+            Conteúdos
           </button>
           <button type="button" className="tab-button active">
-            Avaliacoes
+            Avaliações
           </button>
         </section>
 
@@ -224,30 +164,34 @@ export function AvaliacoesPage() {
                 <article className="review-card" key={review.id}>
                   <div className="review-card__header">
                     <div className="author-block">
-                      <div className="avatar avatar--review">{review.autor.foto}</div>
+                      <div className="avatar avatar--review">
+                        {review.idCriador ? review.idCriador.charAt(0).toUpperCase() : 'U'}
+                      </div>
                       <div>
                         <div className="author-line">
-                          <strong>{review.autor.nome}</strong>
-                          <span className="author-badge">{review.autor.badge}</span>
+                          <strong>Usuário ({review.idCriador?.substring(0, 5)}...)</strong>
+                          <span className="author-badge">Membro</span>
                         </div>
                         <p className="author-meta">
-                          {review.dataCriacao} · {review.autor.papel}
+                          Criado em: {new Date(review.dataCriacao).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
 
-                    <div className="rating-stars" aria-label={`Nota ${review.avaliacao} de 5`}>
+                    <div className="rating-stars" aria-label={`Nota ${review.avaliacao || 0} de 5`}>
                       {Array.from({ length: 5 }, (_, index) => (
-                        <StarIcon key={index} filled={index < review.avaliacao} />
+                        <StarIcon key={index} filled={index < (review.avaliacao || 0)} />
                       ))}
                     </div>
                   </div>
 
+                  <strong style={{ display: 'block', marginTop: '12px', fontSize: '14px', color: '#22354d' }}>
+                    {review.descricao || 'Sem Título'}
+                  </strong>
+
                   <p className="review-text">{review.texto}</p>
 
                   <div className="review-tags">
-                    <span className="mini-pill">{review.disciplina}</span>
-                    <span className="mini-pill">{review.topico}</span>
                     <span className="mini-pill ghost">{review.tipo}</span>
                   </div>
 
