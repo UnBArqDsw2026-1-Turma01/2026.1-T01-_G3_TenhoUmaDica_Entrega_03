@@ -2,6 +2,7 @@ import { UsuarioBuilder } from './usuarioBuilder';
 import { Admnistrador } from 'src/modules/usuarios/models/admnistrador';
 
 export class AdministradorBuilder implements UsuarioBuilder {
+  private uid!: string;
   private admin: Partial<Admnistrador> = {};
 
   constructor() {
@@ -12,10 +13,11 @@ export class AdministradorBuilder implements UsuarioBuilder {
     this.admin = {};
   }
 
-  public setId(id: string): this {
-    this.admin.id = id;
+  public setUid(uid: string): this {
+    this.uid = uid;
     return this;
   }
+
   public setNome(nome: string): this {
     this.admin.nome = nome;
     return this;
@@ -46,9 +48,18 @@ export class AdministradorBuilder implements UsuarioBuilder {
   }
 
   public getResultado(): Admnistrador {
-    this.admin.dataCadastro = new Date();
-    const resultado = this.admin as Admnistrador;
+    if (!this.admin.nome || !this.admin.email) {
+      throw new Error('Faltam dados obrigatórios para construir o Admin.');
+    }
+    const adminReal = new Admnistrador(
+      this.uid,
+      this.admin.nome,
+      this.admin.email,
+    );
+
+    adminReal.statusAtivo = this.admin.statusAtivo!;
+
     this.reset();
-    return resultado;
+    return adminReal;
   }
 }

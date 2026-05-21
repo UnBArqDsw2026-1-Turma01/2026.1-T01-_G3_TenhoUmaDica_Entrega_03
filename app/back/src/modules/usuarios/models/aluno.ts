@@ -1,6 +1,16 @@
 import { Usuario } from './usuario';
 
-export interface Aluno extends Usuario {
-  matricula: string;
-  semestreIngressante: number;
+export class Aluno extends Usuario {
+  matricula!: string;
+  semestreAtual!: number;
+
+  constructor(
+    uid: string,
+    nome: string,
+    email: string,
+    bio: string,
+    foto: string,
+  ) {
+    super(uid, nome, email, bio, foto);
+  }
 }

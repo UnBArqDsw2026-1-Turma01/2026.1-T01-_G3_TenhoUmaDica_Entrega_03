@@ -14,5 +14,5 @@ export class CriarAlunoDto {
   matricula!: string;
 
   @IsNumber()
-  semestreIngressante!: number;
+  semestreAtual!: number;
 }
