@@ -17,7 +17,7 @@
     - [3.4. Participações - Padrões de Projeto](/PadroesDeProjeto/3.4.ParticipacoesPadroes.md)
     - [3.5. Iniciativas Extras - Padrões de Projeto](/PadroesDeProjeto/3.5.IniciativasExtras.md)
   - **Atas de Reuniões**
-  - [Ata de Reunião - 19/05/2026](/AtasDeReunioes/19-05-2026.md)
   - [Ata de Reunião - 11/05/2026](/AtasDeReunioes/11-05-2026.md)
+  - [Ata de Reunião - 19/05/2026](/AtasDeReunioes/19-05-2026.md)
   - [Ata de Reunião - 20/05/2026](/AtasDeReunioes/20-05-2026.md)
 
