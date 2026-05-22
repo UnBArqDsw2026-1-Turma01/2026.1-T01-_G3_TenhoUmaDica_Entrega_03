@@ -1,5 +1,5 @@
 import { PostConteudo } from '../models/post-conteudo.model';
-import { Usuario } from '../../usuarios/usuario.model';
+import { Usuario } from '../../usuarios/models/usuario';
 
 export abstract class FabricaConteudo {
   abstract criarPost(texto: string, descricao: string, criador: Usuario): PostConteudo;

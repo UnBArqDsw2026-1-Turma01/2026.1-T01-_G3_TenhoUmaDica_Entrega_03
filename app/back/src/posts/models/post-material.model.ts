@@ -1,5 +1,5 @@
 import { PostConteudo } from './post-conteudo.model';
-import { Usuario } from '../../usuarios/usuario.model';
+import { Usuario } from '../../usuarios/models/usuario';
 
 export class PostMaterial extends PostConteudo {
   private material: string[];
@@ -15,7 +15,9 @@ export class PostMaterial extends PostConteudo {
   }
 
   renderizar(): void {
-    console.log(`[PostMaterial ${this.id}] renderizando com ${this.material.length} material(is)`);
+    console.log(
+      `[PostMaterial ${this.id}] renderizando com ${this.material.length} material(is)`,
+    );
   }
 
   toJSON() {

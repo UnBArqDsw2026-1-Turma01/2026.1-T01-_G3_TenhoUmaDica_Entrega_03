@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AuthGuard } from '../auth.guard';
-import { Usuario } from '../usuarios/usuario.model';
+import { Usuario } from '../usuarios/models/usuario';
 
 @Controller('posts')
 export class PostsController {

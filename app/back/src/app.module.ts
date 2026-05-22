@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PostsModule } from './posts/posts.module';
 import { ComentariosModule } from './comentarios/comentarios.module';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
     ComentariosModule,
     PostsModule,
     ComentariosModule,
-    UsuariosModule
+    UsuariosModule,
   ],
   controllers: [AppController],
   providers: [AppService],

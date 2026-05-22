@@ -3,8 +3,8 @@ import { FabricaTopico } from './factories/fabrica-topico.factory';
 import { FabricaMaterial } from './factories/fabrica-material.factory';
 import { FabricaAvaliacao } from './factories/fabrica-avaliacao.factory';
 import { PostConteudo } from './models/post-conteudo.model';
-import { Usuario } from '../usuarios/usuario.model';
 import { ComentariosService } from '../comentarios/comentarios.service';
+import { Usuario } from 'src/usuarios/models/usuario';
 
 @Injectable()
 export class PostsService {
@@ -16,21 +16,33 @@ export class PostsService {
 
   constructor(private readonly comentariosService: ComentariosService) {}
 
-  criarPostTopico(texto: string, descricao: string, criador: Usuario): PostConteudo {
+  criarPostTopico(
+    texto: string,
+    descricao: string,
+    criador: Usuario,
+  ): PostConteudo {
     const post = this.fabricaTopico.criarPost(texto, descricao, criador);
     post.postar();
     this.posts.set(post.toJSON().id, post);
     return post;
   }
 
-  criarPostMaterial(texto: string, descricao: string, criador: Usuario): PostConteudo {
+  criarPostMaterial(
+    texto: string,
+    descricao: string,
+    criador: Usuario,
+  ): PostConteudo {
     const post = this.fabricaMaterial.criarPost(texto, descricao, criador);
     post.postar();
     this.posts.set(post.toJSON().id, post);
     return post;
   }
 
-  criarPostAvaliacao(texto: string, descricao: string, criador: Usuario): PostConteudo {
+  criarPostAvaliacao(
+    texto: string,
+    descricao: string,
+    criador: Usuario,
+  ): PostConteudo {
     const post = this.fabricaAvaliacao.criarPost(texto, descricao, criador);
     post.postar();
     this.posts.set(post.toJSON().id, post);
@@ -42,7 +54,9 @@ export class PostsService {
       const postJSON = p.toJSON() as any;
 
       if (postJSON.tipo === 'topico') {
-        const comentarios = this.comentariosService.listarComentariosJSON(postJSON.id) as any[];
+        const comentarios = this.comentariosService.listarComentariosJSON(
+          postJSON.id,
+        ) as any[];
         postJSON.threadComentario = {
           respostas: this.normalizarThreadComentarios(comentarios),
         };
@@ -54,14 +68,16 @@ export class PostsService {
 
   private normalizarThreadComentarios(items: any[]): any[] {
     return items.flatMap((item) => {
-      const nestedResponses = item?.threadComentario?.respostas ?? item?.respostas ?? [];
+      const nestedResponses =
+        item?.threadComentario?.respostas ?? item?.respostas ?? [];
 
       if (!item || typeof item !== 'object') {
         return [];
       }
 
       if (!('texto' in item)) {
-        const normalizedNestedResponses = this.normalizarThreadComentarios(nestedResponses);
+        const normalizedNestedResponses =
+          this.normalizarThreadComentarios(nestedResponses);
 
         if (normalizedNestedResponses.length === 0) {
           return [];
@@ -69,20 +85,24 @@ export class PostsService {
 
         const [parentComment, ...replyComments] = normalizedNestedResponses;
 
-        return [{
-          ...parentComment,
-          threadComentario: {
-            respostas: replyComments,
+        return [
+          {
+            ...parentComment,
+            threadComentario: {
+              respostas: replyComments,
+            },
           },
-        }];
+        ];
       }
 
-      return [{
-        ...item,
-        threadComentario: {
-          respostas: this.normalizarThreadComentarios(nestedResponses),
+      return [
+        {
+          ...item,
+          threadComentario: {
+            respostas: this.normalizarThreadComentarios(nestedResponses),
+          },
         },
-      }];
+      ];
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Aluno } from 'src/modules/usuarios/models/aluno';
+import { Aluno } from 'src/usuarios/models/aluno';
 import { UsuarioBuilder } from './usuarioBuilder';
 
 export class AlunoBuilder implements UsuarioBuilder {

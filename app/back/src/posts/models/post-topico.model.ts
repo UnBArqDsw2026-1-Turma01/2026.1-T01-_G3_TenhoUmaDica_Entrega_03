@@ -1,7 +1,7 @@
 import { PostConteudo } from './post-conteudo.model';
 import { ThreadComentario } from '../../comentarios/models/thread-comentario.model';
 import { Comentario } from '../../comentarios/models/comentario.model';
-import { Usuario } from '../../usuarios/usuario.model';
+import { Usuario } from 'src/usuarios/models/usuario';
 
 export class PostTopico extends PostConteudo {
   private imagens: string[];
@@ -23,7 +23,9 @@ export class PostTopico extends PostConteudo {
   }
 
   renderizar(): void {
-    console.log(`[PostTopico ${this.id}] renderizando com ${this.imagens.length} imagem(ns)`);
+    console.log(
+      `[PostTopico ${this.id}] renderizando com ${this.imagens.length} imagem(ns)`,
+    );
   }
 
   toJSON() {

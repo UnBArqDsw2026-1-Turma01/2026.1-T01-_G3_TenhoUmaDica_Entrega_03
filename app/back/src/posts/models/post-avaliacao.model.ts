@@ -1,5 +1,5 @@
 import { PostConteudo } from './post-conteudo.model';
-import { Usuario } from '../../usuarios/usuario.model';
+import { Usuario } from '../../usuarios/models/usuario';
 
 export class PostAvaliacao extends PostConteudo {
   private avaliacao: number;
@@ -15,7 +15,9 @@ export class PostAvaliacao extends PostConteudo {
   }
 
   renderizar(): void {
-    console.log(`[PostAvaliacao ${this.id}] renderizando com avaliação ${this.avaliacao}`);
+    console.log(
+      `[PostAvaliacao ${this.id}] renderizando com avaliação ${this.avaliacao}`,
+    );
   }
 
   toJSON() {

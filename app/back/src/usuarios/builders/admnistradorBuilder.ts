@@ -1,5 +1,5 @@
 import { UsuarioBuilder } from './usuarioBuilder';
-import { Admnistrador } from 'src/modules/usuarios/models/admnistrador';
+import { Admnistrador } from 'src/usuarios/models/admnistrador';
 
 export class AdministradorBuilder implements UsuarioBuilder {
   private uid!: string;

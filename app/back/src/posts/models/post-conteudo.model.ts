@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Post } from '../interfaces/post.interface';
-import { Usuario } from '../../usuarios/usuario.model';
+import { Usuario } from '../../usuarios/models/usuario';
 
 export class PostConteudo implements Post {
   protected id: string;
