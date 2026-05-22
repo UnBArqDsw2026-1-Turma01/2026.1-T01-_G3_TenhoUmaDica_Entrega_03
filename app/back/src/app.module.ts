@@ -7,6 +7,8 @@ import { UsuariosModule } from './modules/usuarios/usuarios.module';
 
 @Module({
   imports: [
+    UsuariosModule,
+    ComentariosModule,
     PostsModule,
     ComentariosModule,
     UsuariosModule
