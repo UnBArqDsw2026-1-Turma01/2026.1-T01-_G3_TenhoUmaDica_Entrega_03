@@ -34,7 +34,7 @@ export function AvaliacoesPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:3000/posts')
+    fetch('http://localhost:3000/forum/topicos')
       .then(response => response.json())
       .then((data: ReviewPost[]) => {
         const avaliacoes = data.filter(post => post.tipo === 'avaliacao');
@@ -54,7 +54,7 @@ export function AvaliacoesPage() {
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/posts/avaliacao', {
+      const response = await fetch('http://localhost:3000/forum/posts/avaliacao', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
