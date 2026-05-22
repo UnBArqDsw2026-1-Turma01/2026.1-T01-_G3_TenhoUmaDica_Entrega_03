@@ -1,0 +1,5 @@
+export enum TipoEvento {
+    NOVO_COMENTARIO = 'NOVO_COMENTARIO',
+    NOVA_RESPOSTA = 'NOVA_RESPOSTA',
+    UPVOTE = 'UPVOTE',
+}
