@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { FabricaTopico } from './factories/fabrica-topico.factory';
 import { FabricaMaterial } from './factories/fabrica-material.factory';
 import { FabricaAvaliacao } from './factories/fabrica-avaliacao.factory';
+import { FabricaAnuncio } from './factories/fabrica-anuncio.factory';
 import { PostConteudo } from './models/post-conteudo.model';
 import { ComentariosService } from '../comentarios/comentarios.service';
 import { Usuario } from 'src/usuarios/models/usuario';
@@ -11,7 +12,7 @@ export class PostsService {
   private readonly fabricaTopico = new FabricaTopico();
   private readonly fabricaMaterial = new FabricaMaterial();
   private readonly fabricaAvaliacao = new FabricaAvaliacao();
-
+  private readonly fabricaAnuncio = new FabricaAnuncio();
   private readonly posts = new Map<string, PostConteudo>();
 
   constructor(private readonly comentariosService: ComentariosService) {}
@@ -46,6 +47,17 @@ export class PostsService {
     const post = this.fabricaAvaliacao.criarPost(texto, descricao, criador);
     post.postar();
     this.posts.set(post.toJSON().id, post);
+    return post;
+  }
+
+  criarPostAnuncio(
+    texto: string,
+    descricao: string,
+    criador: Usuario,
+  ): PostConteudo {
+    const post = this.fabricaAnuncio.criarPost(texto, descricao, criador);
+    post.postar();
+    this.posts.set(post.toJSON().id, post); 
     return post;
   }
 

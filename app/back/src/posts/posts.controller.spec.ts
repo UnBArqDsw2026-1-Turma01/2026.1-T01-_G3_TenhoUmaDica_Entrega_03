@@ -15,6 +15,7 @@ describe('PostsController', () => {
       criarPostTopico: jest.fn(),
       criarPostMaterial: jest.fn(),
       criarPostAvaliacao: jest.fn(),
+      criarPostAnuncio: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -57,6 +58,8 @@ describe('PostsController', () => {
     });
   });
 
+   //---------------------Topico---------------------------
+
   describe('criarTopico', () => {
     it('deve chamar service com texto, descricao e Usuario criado a partir do req.user', () => {
       const body = { texto: 'Título do tópico', descricao: 'Descrição do tópico' };
@@ -88,6 +91,8 @@ describe('PostsController', () => {
     });
   });
 
+   //-------------------Material-------------------------
+
   describe('criarMaterial', () => {
     it('deve chamar service com texto, descricao e Usuario correto', () => {
       const body = { texto: 'Conteúdo do material', descricao: 'Desc material' };
@@ -117,6 +122,7 @@ describe('PostsController', () => {
     });
   });
 
+//------------------------Avaliacao--------------------------
   describe('criarAvaliacao', () => {
     it('deve chamar service com texto, descricao e Usuario correto', () => {
       const body = { texto: 'Questão da avaliação', descricao: 'Desc avaliação' };
@@ -145,4 +151,40 @@ describe('PostsController', () => {
       expect(result).toBe(expectedJSON);
     });
   });
-});
+
+  //-----------------------Anuncio--------------------------
+  describe('criarAnuncio', () => {
+    it('deve chamar service com texto, descricao e Usuario correto para o anúncio', () => {
+      const body = { texto: 'Aviso Importante UnB', descricao: 'A aula de ED2 foi adiada' };
+      const expectedJSON = { 
+        id: 'post-4', 
+        tipo: 'anuncio', 
+        idCriador: mockUser.uid,
+        fixado: true,
+        comentariosBloqueados: true 
+      };
+      const mockPost = { toJSON: jest.fn().mockReturnValue(expectedJSON) };
+      postsService.criarPostAnuncio.mockReturnValue(mockPost as any);
+
+      const result = controller.criarAnuncio(body, mockReq);
+
+      expect(postsService.criarPostAnuncio).toHaveBeenCalledWith(
+        body.texto,
+        body.descricao,
+        expect.objectContaining({ id: mockUser.uid }),
+      );
+      expect(result).toEqual(expectedJSON);
+    });
+
+    it('deve retornar o JSON com as propriedades de anúncio tratadas pelo seu toJSON', () => {
+      const expectedJSON = { id: 'post-4', tipo: 'anuncio', fixado: true };
+      postsService.criarPostAnuncio.mockReturnValue({
+        toJSON: jest.fn().mockReturnValue(expectedJSON),
+      } as any);
+
+      const result = controller.criarAnuncio({ texto: 'Aviso', descricao: 'Desc' }, mockReq);
+
+      expect(result).toBe(expectedJSON);
+    });
+  });
+}); // <--- ESTA É A CHAVE QUE FECHA O ARQUIVO INTEIRO (describe PostsController)

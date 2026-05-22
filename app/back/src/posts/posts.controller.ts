@@ -32,4 +32,11 @@ export class PostsController {
     const criador = new Usuario(req.user.uid, req.user.name, req.user.email);
     return this.postsService.criarPostAvaliacao(body.texto, body.descricao, criador).toJSON();
   }
+
+  @Post('anuncio')
+  @UseGuards(AuthGuard)
+  criarAnuncio(@Body() body: { texto: string; descricao: string }, @Req() req: any) {
+    const criador = new Usuario(req.user.uid, req.user.name, req.user.email);
+    return this.postsService.criarPostAnuncio(body.texto, body.descricao, criador).toJSON();
+  }
 }

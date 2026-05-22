@@ -9,6 +9,7 @@ export class PostConteudo implements Post {
   protected dataCriacao: Date;
   protected contadorCurtida: number;
   protected idCriador: Usuario;
+  protected fixado: boolean;
 
   constructor(texto: string, descricao: string, idCriador: Usuario) {
     this.id = randomUUID();
@@ -17,6 +18,7 @@ export class PostConteudo implements Post {
     this.dataCriacao = new Date();
     this.contadorCurtida = 0;
     this.idCriador = idCriador;
+    this.fixado = false;
   }
 
   postar(): void {
@@ -44,6 +46,29 @@ export class PostConteudo implements Post {
 
   clicar(): void {
     console.log(`[PostConteudo ${this.id}] clicado`);
+  }
+
+  public fixar(usuarioTentandoFixar: Usuario): void {
+    const ehModerador = 
+      usuarioTentandoFixar.email.includes('admin') || 
+      usuarioTentandoFixar.email.includes('moderador') ||
+      usuarioTentandoFixar.nome.toLowerCase().includes('moderador');
+
+    if (!ehModerador) {
+      console.log(`[ACESSO NEGADO] O usuário ${usuarioTentandoFixar.nome} não tem permissão para fixar este post.`);
+      return; 
+    }
+
+    this.fixado = true;
+    console.log(`[POST FIXADO] O post ${this.id} foi fixado por ${usuarioTentandoFixar.nome}`);
+  }
+
+  public desfixar(usuarioTentandoFixar: Usuario): void {
+    if (!usuarioTentandoFixar.email.includes('admin') && !usuarioTentandoFixar.email.includes('moderador')) {
+      return;
+    }
+    this.fixado = false;
+    console.log(`[POST DESFIXADO] O post ${this.id} foi desfixado.`);
   }
 
   toJSON() {
