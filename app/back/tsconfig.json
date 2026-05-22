@@ -23,6 +23,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@entities*": ["src/models/*"]
-    }
+    },
+    "types": ["jest", "node"]
   }
 }
