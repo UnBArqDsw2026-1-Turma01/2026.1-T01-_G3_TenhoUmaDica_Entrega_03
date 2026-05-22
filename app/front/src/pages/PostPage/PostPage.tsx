@@ -31,7 +31,7 @@ export default function PostPage() {
 
   // useEffect roda essa função assim que a página é carregada pela primeira vez
   useEffect(() => {
-    fetch('http://localhost:3000/posts')
+    fetch('http://localhost:3000/forum/topicos')
       .then(response => response.json())
       .then((data: IPost[]) => {
         const topicos = data.filter(post => post.tipo === 'topico');
@@ -54,13 +54,13 @@ export default function PostPage() {
   const handleSubmitTopic = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/posts/topico', {
+      const response = await fetch('http://localhost:3000/forum/topicos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${debugToken}`,
         },
-        body: JSON.stringify({ texto: newTopicText, descricao: newTopicTitle })
+        body: JSON.stringify({ titulo: newTopicTitle, conteudo: newTopicText })
       });
       
       if (response.ok) {
@@ -68,7 +68,8 @@ export default function PostPage() {
         setPosts(prev => [newlyCreatedPost, ...prev]);
         handleCloseModal();
       } else {
-        alert("Erro ao criar tópico. Verifique se o Token é válido e se a API está online.");
+        const text = await response.text().catch(() => '');
+        alert(`Erro ao criar tópico. Status: ${response.status} ${response.statusText}\n${text}`);
       }
     } catch (err) {
       console.error(err);
