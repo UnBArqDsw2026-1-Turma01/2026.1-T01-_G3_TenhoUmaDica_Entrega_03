@@ -15,6 +15,7 @@ describe('ComentariosService', () => {
       const comentario = service.adicionarComentario(POST_ID, 'meu texto', 'user-1');
       expect(comentario.toJSON().texto).toBe('meu texto');
       expect(comentario.toJSON().idCriador).toBe('user-1');
+      expect(comentario.toJSON().idPostRaiz).toBe(POST_ID);
     });
 
     it('deve aparecer na listagem do post', () => {
@@ -34,13 +35,16 @@ describe('ComentariosService', () => {
   describe('adicionarResposta', () => {
     it('deve criar uma ThreadComentario ao responder um Comentario simples', () => {
       const pai = service.adicionarComentario(POST_ID, 'comentário pai', 'user-1');
-      service.adicionarResposta(POST_ID, pai.getId(), 'resposta', 'user-2');
+      const resposta = service.adicionarResposta(POST_ID, pai.getId(), 'resposta', 'user-2');
 
       const lista = service.listarComentariosJSON(POST_ID);
       // O comentário pai foi substituído por uma Thread
       expect(lista).toHaveLength(1);
       expect((lista[0] as any).respostas).toBeDefined();
       expect((lista[0] as any).respostas).toHaveLength(2);
+      expect((lista[0] as any).respostas[0].idPostRaiz).toBe(POST_ID);
+      expect(resposta.toJSON().idPostRaiz).toBe(POST_ID);
+      expect(resposta.toJSON().idComentarioPai).toBe(pai.getId());
     });
 
     it('respostas adicionais ao mesmo pai devem ser agregadas na mesma Thread', () => {

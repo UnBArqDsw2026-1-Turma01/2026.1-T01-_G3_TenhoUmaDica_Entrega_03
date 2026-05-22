@@ -38,7 +38,7 @@ export class ComentariosService {
 
   adicionarComentario(postId: string, texto: string, idCriador: string): Comentario {
     const manager = this.getOrCreateManager(postId);
-    const comentario = new Comentario(texto, idCriador);
+    const comentario = new Comentario(texto, idCriador, postId);
     this.comentariosById.set(comentario.getId(), comentario);
     manager.adicionar(comentario);
     this.parentByComentarioId.set(comentario.getId(), manager);
@@ -57,9 +57,6 @@ export class ComentariosService {
       throw new NotFoundException(`Comentário ${comentarioPaiId} não encontrado`);
     }
 
-    const resposta = new Comentario(texto, idCriador);
-    this.comentariosById.set(resposta.getId(), resposta);
-
     let thread = this.threadByComentarioId.get(comentarioPaiId);
     if (!thread) {
       thread = new ThreadComentario();
@@ -73,6 +70,9 @@ export class ComentariosService {
       this.threadByComentarioId.set(comentarioPaiId, thread);
     }
 
+    const resposta = new Comentario(texto, idCriador, postId, comentarioPaiId);
+    this.comentariosById.set(resposta.getId(), resposta);
+
     thread.adicionarResposta(resposta);
     this.parentByComentarioId.set(resposta.getId(), thread);
     return resposta;
@@ -83,5 +83,21 @@ export class ComentariosService {
     return manager.getComponentes().map((c) =>
       typeof (c as any).toJSON === 'function' ? (c as any).toJSON() : c,
     );
+  }
+
+  debugSnapshot(postId: string): object {
+    const manager = this.getOrCreateManager(postId);
+
+    return {
+      postId,
+      topLevelCount: manager.getComponentes().length,
+      topLevelIds: manager.getComponentes().map((component) =>
+        typeof (component as any).getId === 'function' ? (component as any).getId() : 'unknown',
+      ),
+      threadCommentIds: Array.from(this.threadByComentarioId.keys()).filter((commentId) =>
+        this.parentByComentarioId.has(commentId),
+      ),
+      storedCommentIds: Array.from(this.comentariosById.keys()),
+    };
   }
 }

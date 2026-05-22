@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { ComponenteComentario } from '../interfaces/componente-comentario.interface';
+import { ThreadComentario } from './thread-comentario.model';
 
 export class Comentario implements ComponenteComentario {
   private readonly id: string;
@@ -8,22 +9,32 @@ export class Comentario implements ComponenteComentario {
   private readonly dataCriacao: Date;
   private contadorCurtida: number;
   private contadorDislike: number;
+  private idPostRaiz?: string;
+  private idComentarioPai?: string;
+  private threadComentario: ThreadComentario;
 
-  constructor(texto: string, idCriador: string) {
+  constructor(texto: string, idCriador: string, idPostRaiz?: string, idComentarioPai?: string) {
     this.id = randomUUID();
     this.texto = texto;
     this.idCriador = idCriador;
     this.dataCriacao = new Date();
     this.contadorCurtida = 0;
     this.contadorDislike = 0;
+    this.idPostRaiz = idPostRaiz;
+    this.idComentarioPai = idComentarioPai;
+    this.threadComentario = new ThreadComentario();
   }
 
   getId(): string {
     return this.id;
   }
 
+  adicionarResposta(comentario: Comentario): void {
+    this.threadComentario.adicionarResposta(comentario);
+  }
+
   exibir(): string {
-    return `[Comentario ${this.id}] "${this.texto}" | +${this.contadorCurtida} -${this.contadorDislike}`;
+    return `[Comentario ${this.id}] "${this.texto}" | +${this.contadorCurtida} -${this.contadorDislike}\n${this.threadComentario.exibir(1)}`;
   }
 
   editar(novoTexto: string): void {
@@ -61,10 +72,13 @@ export class Comentario implements ComponenteComentario {
     return {
       id: this.id,
       idCriador: this.idCriador,
+      idPostRaiz: this.idPostRaiz,
+      idComentarioPai: this.idComentarioPai,
       texto: this.texto,
       dataCriacao: this.dataCriacao,
       contadorCurtida: this.contadorCurtida,
       contadorDislike: this.contadorDislike,
+      threadComentario: this.threadComentario.toJSON()
     };
   }
 }
