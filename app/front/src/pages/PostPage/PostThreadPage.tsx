@@ -31,9 +31,21 @@ type PostDetail = {
 };
 
 async function fetchPostDetail(postId: string): Promise<PostDetail | null> {
-  const response = await fetch("http://localhost:3000/posts");
-  const data: PostDetail[] = await response.json();
-  return data.find((item) => item.id === postId) ?? null;
+  if (!postId) return null;
+  const response = await fetch(`http://localhost:3000/forum/posts/${postId}/completo`);
+  if (!response.ok) return null;
+  const data = await response.json();
+  if (data && data.id) return data as PostDetail;
+  return {
+    id: data.postId ?? postId,
+    tipo: 'topico',
+    texto: '',
+    descricao: '',
+    dataCriacao: new Date().toISOString(),
+    contadorCurtida: 0,
+    idCriador: '',
+    threadComentario: { respostas: data.comentarios ?? [] },
+  } as PostDetail;
 }
 
 export default function PostThreadPage() {
@@ -110,7 +122,7 @@ export default function PostThreadPage() {
         textLength: rootCommentText.length,
       });
 
-      const response = await fetch(`http://localhost:3000/posts/${postId}/comentarios`, {
+      const response = await fetch(`http://localhost:3000/forum/posts/${postId}/comentarios`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +135,8 @@ export default function PostThreadPage() {
       console.debug("[comments-debug] root comment response", payload);
 
       if (!response.ok) {
-        throw new Error("Falha ao criar comentário");
+        const text = await response.text().catch(() => '');
+        throw new Error(`Falha ao criar comentário: ${response.status} ${response.statusText} ${text}`);
       }
 
       setRootCommentText("");
@@ -156,7 +169,7 @@ export default function PostThreadPage() {
       });
 
       const response = await fetch(
-        `http://localhost:3000/posts/${postId}/comentarios/${parentCommentId}/respostas`,
+        `http://localhost:3000/forum/posts/${postId}/comentarios/${parentCommentId}/respostas`,
         {
           method: "POST",
           headers: {
@@ -171,7 +184,8 @@ export default function PostThreadPage() {
       console.debug("[comments-debug] reply response", payload);
 
       if (!response.ok) {
-        throw new Error("Falha ao criar resposta");
+        const text = await response.text().catch(() => '');
+        throw new Error(`Falha ao criar resposta: ${response.status} ${response.statusText} ${text}`);
       }
 
       setReplyText("");
@@ -187,6 +201,8 @@ export default function PostThreadPage() {
 
   const resolvedThreadComments = post?.threadComentario?.respostas ?? [];
   const topicLabel = post?.tipo === "avaliacao" ? "Avaliação" : "Tópico";
+  const topicTitle = post?.descricao || "Sem Título";
+  const topicContent = post?.texto || "Sem conteúdo disponível.";
 
   return (
     <div className="app-shell">
@@ -216,14 +232,14 @@ export default function PostThreadPage() {
             <div className="course-banner__content">
               <p className="eyebrow">Disciplina</p>
               <div className="course-title-row">
-                <h1>Cálculo 1</h1>
+                <h1>{topicTitle}</h1>
                 <div className="course-score">
                   <StarIcon filled />
                   <span>4.2</span>
                 </div>
               </div>
               <p className="course-banner__subtitle">
-                {topicLabel} aberta para discussão com as respostas da thread.
+                {topicContent}
               </p>
             </div>
           </div>
@@ -231,8 +247,7 @@ export default function PostThreadPage() {
           <div className="course-meta-card">
             <div className="course-meta-card__intro">
               <p>
-                Visualização detalhada do tópico selecionado, com os comentários já agregados na lista
-                retornada por <strong>/posts</strong>.
+                Visualização detalhada do tópico selecionado, com os comentários retornados pelo facade.
               </p>
             </div>
             <div className="course-meta-card__stats">
