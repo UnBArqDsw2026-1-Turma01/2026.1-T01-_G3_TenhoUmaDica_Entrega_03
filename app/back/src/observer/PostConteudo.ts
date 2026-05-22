@@ -11,6 +11,7 @@ export class PostConteudo implements Notificavel {
     private dataCriacao: Date;
     private contadorCurtidas: number;
     private contadorDislikes: number;
+    private topicosSalvos: string[] = [];
     private observadores: Observer[] = [];
     private comentarios: Comentario[] = [];
 
@@ -59,6 +60,11 @@ export class PostConteudo implements Notificavel {
 
     public deletar(): void {
         console.log(`PostConteudo [${this.id}] deletado.`);
+    }
+
+    public salvarTopico(): void {
+        this.topicosSalvos.push(this.id);
+        console.log(`PostConteudo [${this.id}] salvo como tópico.`);
     }
 
     public addCurtida(): void {
@@ -121,6 +127,7 @@ export class PostConteudo implements Notificavel {
             dataCriacao: this.dataCriacao,
             contadorCurtidas: this.contadorCurtidas,
             contadorDislikes: this.contadorDislikes,
+            topicosSalvosCount: this.topicosSalvos.length,
             comentarios: this.comentarios.map((c) => c.toJSON()),
             observadoresCount: this.observadores.length,
         };

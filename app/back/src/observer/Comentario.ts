@@ -9,6 +9,7 @@ export class Comentario implements Notificavel {
     private dataCriacao: Date;
     private contadorCurtidas: number;
     private contadorDislikes: number;
+    private topicosSalvos: string[] = [];
     private observadores: Observer[] = [];
 
     constructor(texto: string) {
@@ -46,6 +47,11 @@ export class Comentario implements Notificavel {
 
     public deletar(): void {
         console.log(`Comentário [${this.id}] deletado.`);
+    }
+
+    public salvarTopico(): void {
+        this.topicosSalvos.push(this.id);
+        console.log(`Comentário [${this.id}] salvo como tópico.`);
     }
 
     public addCurtida(): void {
@@ -105,6 +111,7 @@ export class Comentario implements Notificavel {
             dataCriacao: this.dataCriacao,
             contadorCurtidas: this.contadorCurtidas,
             contadorDislikes: this.contadorDislikes,
+            topicosSalvosCount: this.topicosSalvos.length,
             observadoresCount: this.observadores.length,
         };
     }
