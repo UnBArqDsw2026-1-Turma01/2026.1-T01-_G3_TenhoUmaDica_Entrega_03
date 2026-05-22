@@ -10,6 +10,7 @@ export class PostConteudo implements Notificavel {
     private descricao: string;
     private dataCriacao: Date;
     private contadorCurtidas: number;
+    private contadorDislikes: number;
     private observadores: Observer[] = [];
     private comentarios: Comentario[] = [];
 
@@ -19,6 +20,7 @@ export class PostConteudo implements Notificavel {
         this.descricao = descricao;
         this.dataCriacao = new Date();
         this.contadorCurtidas = 0;
+        this.contadorDislikes = 0;
     }
 
     public getId(): string {
@@ -35,6 +37,10 @@ export class PostConteudo implements Notificavel {
 
     public getContadorCurtidas(): number {
         return this.contadorCurtidas;
+    }
+
+    public getContadorDislikes(): number {
+        return this.contadorDislikes;
     }
 
     public getComentarios(): Comentario[] {
@@ -59,6 +65,12 @@ export class PostConteudo implements Notificavel {
         this.contadorCurtidas++;
         console.log(`PostConteudo [${this.id}] recebeu uma curtida! Total: ${this.contadorCurtidas}`);
         this.notificarObservadores(TipoEvento.UPVOTE);
+    }
+
+    public addDislike(): void {
+        this.contadorDislikes++;
+        console.log(`PostConteudo [${this.id}] recebeu um dislike! Total: ${this.contadorDislikes}`);
+        this.notificarObservadores(TipoEvento.DOWNVOTE);
     }
 
     public adicionarComentario(comentario: Comentario): void {
@@ -94,7 +106,23 @@ export class PostConteudo implements Notificavel {
                 case TipoEvento.UPVOTE:
                     obs.onUpvoteRecebido(this);
                     break;
+                case TipoEvento.DOWNVOTE:
+                    obs.onDownvoteRecebido(this);
+                    break;
             }
         }
+    }
+
+    public toJSON(): object {
+        return {
+            id: this.id,
+            texto: this.texto,
+            descricao: this.descricao,
+            dataCriacao: this.dataCriacao,
+            contadorCurtidas: this.contadorCurtidas,
+            contadorDislikes: this.contadorDislikes,
+            comentarios: this.comentarios.map((c) => c.toJSON()),
+            observadoresCount: this.observadores.length,
+        };
     }
 }

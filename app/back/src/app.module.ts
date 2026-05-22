@@ -6,6 +6,7 @@ import { ComentariosModule } from './comentarios/comentarios.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { ForumModule } from './forum/forum.module';
 import { BlocosModule } from './blocos/blocos.module';
+import { ObserverModule } from './observer/observer.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BlocosModule } from './blocos/blocos.module';
     PostsModule,
     ForumModule,
     BlocosModule,
+    ObserverModule,
   ],
   controllers: [AppController],
   providers: [AppService],
