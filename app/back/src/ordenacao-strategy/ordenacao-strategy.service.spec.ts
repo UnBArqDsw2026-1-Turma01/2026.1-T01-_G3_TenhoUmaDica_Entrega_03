@@ -89,6 +89,16 @@ describe('OrdenacaoStrategyService', () => {
     });
   });
 
+  // ── ordenar por menosPopulares ────────────────────────────────────
+
+  describe('ordenar por menosPopulares', () => {
+    it('retorna lista do menor para o maior número de votos', () => {
+      const resultado = service.ordenar(mockTopicos, 'menosPopulares');
+      const votos = resultado.map((t) => t.votos);
+      expect(votos).toEqual([3, 15, 42, 105]);
+    });
+  });
+
   // ── algoritmo inválido ────────────────────────────────────────────
 
   describe('algoritmo inválido', () => {
@@ -98,7 +108,7 @@ describe('OrdenacaoStrategyService', () => {
 
     it('mensagem de erro menciona os algoritmos válidos', () => {
       expect(() => service.ordenar(mockTopicos, 'xpto')).toThrow(
-        'votos, data ou relevancia',
+        'votos, data, relevancia ou menosPopulares',
       );
     });
   });
@@ -122,13 +132,13 @@ describe('OrdenacaoStrategyService', () => {
   // ── listarAlgoritmos ──────────────────────────────────────────────
 
   describe('listarAlgoritmos', () => {
-    it('retorna os três algoritmos disponíveis', () => {
+    it('retorna os algoritmos disponíveis', () => {
       const algoritmos = service.listarAlgoritmos();
-      expect(algoritmos).toEqual(expect.arrayContaining(['votos', 'data', 'relevancia']));
+      expect(algoritmos).toEqual(expect.arrayContaining(['votos', 'data', 'relevancia', 'menosPopulares']));
     });
 
-    it('retorna exatamente 3 algoritmos', () => {
-      expect(service.listarAlgoritmos()).toHaveLength(3);
+    it('retorna exatamente 4 algoritmos', () => {
+      expect(service.listarAlgoritmos()).toHaveLength(4);
     });
   });
 });
