@@ -1,16 +1,26 @@
 import { Avaliacao } from './Avaliacao';
-import { ProfessorReal } from './ProfessorReal';
+import { ProfessorService } from './ProfessorService';
 
-const avaliacao1 = new Avaliacao('uuid-1', 5, 5, 5, 'Excelente didática!', new Date());
-const avaliacao2 = new Avaliacao('uuid-2', 4, 3, 3.5, 'Domina o assunto, mas a prova é difícil.', new Date());
-const avaliacao3 = new Avaliacao('uuid-3', 5, 4, 4.5, 'Ótima professora.', new Date());
+const avaliacao1 = new Avaliacao('uuid-1', 5, 5, 5, 'Excelente didatica!', new Date());
+const avaliacao2 = new Avaliacao('uuid-2', 4, 3, 3.5, 'Domina o assunto, mas a prova e dificil.', new Date());
+const avaliacao3 = new Avaliacao('uuid-3', 5, 4, 4.5, 'Otima professora.', new Date());
 
-const professoraMilene = new ProfessorReal('api-unb-123', 'Professor', [avaliacao1, avaliacao2, avaliacao3]);
+const service = new ProfessorService();
 
-console.log(`Teste da Lógica Base do ProfessorReal`);
-console.log(`Nome: ${professoraMilene.getNome()}`);
-console.log(`ID API: ${professoraMilene.getIdAPIExterna()}`);
+service.cadastrarProfessor('api-unb-123', 'Milene Serrano', [avaliacao1, avaliacao2, avaliacao3]);
 
-const media = professoraMilene.getMediaAvaliacao();
+console.log('=== TESTE DO PADRAO PROXY ===\n');
 
-console.log(`Média Calculada: ${media.toFixed(2)}`);
+const professora = service.getProfessor('api-unb-123');
+
+console.log(`Buscando dados da Professora: ${professora.getNome()}`);
+console.log(`ID na API: ${professora.getIdAPIExterna()}\n`);
+
+console.log('>> Solicitando media pela primeira vez:');
+console.log(`Media Retornada: ${professora.getMediaAvaliacao().toFixed(2)}\n`);
+
+console.log('>> Solicitando media pela segunda vez:');
+console.log(`Media Retornada: ${professora.getMediaAvaliacao().toFixed(2)}\n`);
+
+console.log('>> Solicitando media pela terceira vez:');
+console.log(`Media Retornada: ${professora.getMediaAvaliacao().toFixed(2)}\n`);
