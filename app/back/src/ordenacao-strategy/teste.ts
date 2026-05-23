@@ -1,8 +1,10 @@
-import { TopicoFeed } from './AlgoritmoOrdenacao';
+// Para rodar a demo manualmente: npx ts-node --project tsconfig.json src/ordenacao-strategy/teste.ts
+
+import { TopicoFeed } from './models/topico-feed.model';
 import { Feed } from './Feed';
-import { OrdenaPorVotos } from './OrdenaPorVotos';
-import { OrdenaPorData } from './OrdenaPorData';
-import { OrdenaPorRelevancia } from './OrdenaPorRelevancia';
+import { OrdenaPorVotos } from './strategies/OrdenaPorVotos';
+import { OrdenaPorData } from './strategies/OrdenaPorData';
+import { OrdenaPorRelevancia } from './strategies/OrdenaPorRelevancia';
 
 const mockTopicos: TopicoFeed[] = [
   { id: 1, titulo: 'Melhor RU da UnB?', votos: 15, dataCriacao: '2026-05-10T10:00:00Z' },
@@ -14,18 +16,15 @@ const mockTopicos: TopicoFeed[] = [
 console.log('=== LISTA ORIGINAL (MOCK) ===');
 console.table(mockTopicos, ['id', 'titulo', 'votos', 'dataCriacao']);
 
-
 const meuFeed = new Feed(new OrdenaPorVotos(), mockTopicos);
 
 console.log('\n=== ORDENADO POR VOTOS (Maior pro menor) ===');
-
 console.table(meuFeed.executarOrdenacao(), ['id', 'titulo', 'votos', 'dataCriacao']);
 
 meuFeed.setAlgoritmo(new OrdenaPorData());
 
 console.log('\n=== ORDENADO POR DATA (Mais recente primeiro) ===');
 console.table(meuFeed.executarOrdenacao(), ['id', 'titulo', 'votos', 'dataCriacao']);
-
 
 meuFeed.setAlgoritmo(new OrdenaPorRelevancia());
 
