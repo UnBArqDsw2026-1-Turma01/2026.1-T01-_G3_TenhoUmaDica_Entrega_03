@@ -1,5 +1,6 @@
 import { BlocosService } from './blocos.service';
 import { NotFoundException } from '@nestjs/common';
+import { TipoTexto } from './BlocoTexto'; 
 
 describe('BlocosService - Padrão Composite', () => {
   let service: BlocosService;
@@ -11,7 +12,7 @@ describe('BlocosService - Padrão Composite', () => {
   it('deve compor blocos e retornar o markdown correto', () => {
     const { id } = service.criarLista() as { id: string };
 
-    service.adicionarTexto(id, { texto: 'Título', tipo: 'titulo 1' });
+    service.adicionarTexto(id, { texto: 'Título', tipo: TipoTexto.TITULO_1 });
     service.adicionarCodigo(id, { texto: 'console.log("Oi");', linguagem: 'javascript' });
 
     const resultado = service.renderizar(id) as any;
@@ -24,7 +25,7 @@ describe('BlocosService - Padrão Composite', () => {
 
   it('deve falhar ao tentar adicionar bloco em uma lista inexistente', () => {
     expect(() => {
-      service.adicionarTexto('id-invalido', { texto: 'Erro', tipo: 'normal' });
+      service.adicionarTexto('id-invalido', { texto: 'Erro', tipo: TipoTexto.NORMAL });
     }).toThrow(NotFoundException);
   });
 });
