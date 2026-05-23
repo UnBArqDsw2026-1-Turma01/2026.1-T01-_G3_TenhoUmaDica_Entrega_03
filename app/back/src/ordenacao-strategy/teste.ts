@@ -5,12 +5,14 @@ import { Feed } from './Feed';
 import { OrdenaPorVotos } from './strategies/OrdenaPorVotos';
 import { OrdenaPorData } from './strategies/OrdenaPorData';
 import { OrdenaPorRelevancia } from './strategies/OrdenaPorRelevancia';
+import { OrdenaPorMenosPopulares } from './strategies/OrdenaPorMenosPopulares';
 
 const mockTopicos: TopicoFeed[] = [
   { id: 1, titulo: 'Melhor RU da UnB?', votos: 15, dataCriacao: '2026-05-10T10:00:00Z' },
   { id: 2, titulo: 'Vaga de Estagio Backend', votos: 105, dataCriacao: '2026-05-15T14:30:00Z' },
   { id: 3, titulo: 'Duvida com Teclado Mecanico', votos: 3, dataCriacao: '2026-05-21T18:00:00Z' },
   { id: 4, titulo: 'Grupo de Estudos de Arquitetura e Desenho de Software', votos: 42, dataCriacao: '2026-05-01T08:00:00Z' },
+  { id: 5, titulo: 'VENDO INGRESSOS PRA FESTA HOJE (Chama no PV)!!!!', votos: -8, dataCriacao: '2026-05-22T08:15:00Z' },
 ];
 
 console.log('=== LISTA ORIGINAL (MOCK) ===');
@@ -30,3 +32,9 @@ meuFeed.setAlgoritmo(new OrdenaPorRelevancia());
 
 console.log('\n=== ORDENADO POR RELEVANCIA (Mix de Votos e Data) ===');
 console.table(meuFeed.executarOrdenacao(), ['id', 'titulo', 'votos', 'dataCriacao']);
+
+meuFeed.setAlgoritmo(new OrdenaPorMenosPopulares());
+
+console.log('\n=== ORDENADO POR MENOS POPULARES (Foco da Moderação) ===');
+console.table(meuFeed.executarOrdenacao(), ['id', 'titulo', 'votos', 'dataCriacao']);
+
