@@ -7,6 +7,7 @@ import { UsuariosModule } from './usuarios/usuarios.module';
 import { ForumModule } from './forum/forum.module';
 import { BlocosModule } from './blocos/blocos.module';
 import { ObserverModule } from './observer/observer.module';
+import { OrdenacaoStrategyModule } from './ordenacao-strategy/ordenacao-strategy.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ObserverModule } from './observer/observer.module';
     ForumModule,
     BlocosModule,
     ObserverModule,
+    OrdenacaoStrategyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

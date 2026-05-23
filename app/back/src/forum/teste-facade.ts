@@ -1,11 +1,15 @@
 //para testar use npx ts-node teste-facade.ts
 import { ForumFacade } from './forum.facade';
 import { ComentariosService } from '../comentarios/comentarios.service';
+import { PostsService } from '../posts/posts.service';
+import { UsuariosService } from '../usuarios/usuarios.service';
 
 console.log('=== FÓRUM FACADE: ORQUESTRANDO O SISTEMA (USANDO A CLASSE REAL) ===\n');
 
 const comentariosService = new ComentariosService();
-const facade = new ForumFacade(comentariosService);
+const postsService = new PostsService(comentariosService);
+const usuariosService = new UsuariosService();
+const facade = new ForumFacade(comentariosService, postsService, usuariosService);
 
 console.log('1. Chamando exibirTopicosComPosts():');
 console.log(facade.exibirTopicosComPosts());
