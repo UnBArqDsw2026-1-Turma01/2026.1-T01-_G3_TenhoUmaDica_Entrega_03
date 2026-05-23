@@ -130,4 +130,21 @@ export class Usuario implements Observer {
         console.log(`[Notificação - ${this.nome}] Novo upvote recebido no alvo.`);
         this.notificacoesRecebidas.push({ tipo: 'UPVOTE', alvo });
     }
+
+    public onDownvoteRecebido(alvo: any): void {
+        console.log(`[Notificação - ${this.nome}] Novo downvote recebido no alvo.`);
+        this.notificacoesRecebidas.push({ tipo: 'DOWNVOTE', alvo });
+    }
+
+    public toJSON(): object {
+        return {
+            id: this.id,
+            nome: this.nome,
+            email: this.email,
+            foto: this.foto,
+            bio: this.bio,
+            dataCadastro: this.dataCadastro,
+            notificacoes: this.notificacoesRecebidas.map((n) => ({ tipo: n.tipo })),
+        };
+    }
 }

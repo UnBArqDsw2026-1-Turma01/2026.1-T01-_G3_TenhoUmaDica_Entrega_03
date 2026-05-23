@@ -1,4 +1,4 @@
-// Para rodar: npx ts-node --project tsconfig.json src/observer/demo.ts
+// Para rodar a demo manualmente: npx ts-node --project tsconfig.json src/observer/teste.ts
 
 import { PostConteudo } from './PostConteudo';
 import { Comentario } from './Comentario';
