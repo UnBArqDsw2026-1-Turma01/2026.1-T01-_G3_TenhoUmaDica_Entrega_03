@@ -8,6 +8,8 @@ export class Comentario implements Notificavel {
     private texto: string;
     private dataCriacao: Date;
     private contadorCurtidas: number;
+    private contadorDislikes: number;
+    private topicosSalvos: string[] = [];
     private observadores: Observer[] = [];
 
     constructor(texto: string) {
@@ -15,6 +17,7 @@ export class Comentario implements Notificavel {
         this.texto = texto;
         this.dataCriacao = new Date();
         this.contadorCurtidas = 0;
+        this.contadorDislikes = 0;
     }
 
     public getId(): string {
@@ -27,6 +30,10 @@ export class Comentario implements Notificavel {
 
     public getContadorCurtidas(): number {
         return this.contadorCurtidas;
+    }
+
+    public getContadorDislikes(): number {
+        return this.contadorDislikes;
     }
 
     public postar(): void {
@@ -42,10 +49,21 @@ export class Comentario implements Notificavel {
         console.log(`Comentário [${this.id}] deletado.`);
     }
 
+    public salvarTopico(): void {
+        this.topicosSalvos.push(this.id);
+        console.log(`Comentário [${this.id}] salvo como tópico.`);
+    }
+
     public addCurtida(): void {
         this.contadorCurtidas++;
         console.log(`Comentário [${this.id}] recebeu uma curtida! Total: ${this.contadorCurtidas}`);
         this.notificarObservadores(TipoEvento.UPVOTE);
+    }
+
+    public addDislike(): void {
+        this.contadorDislikes++;
+        console.log(`Comentário [${this.id}] recebeu um dislike! Total: ${this.contadorDislikes}`);
+        this.notificarObservadores(TipoEvento.DOWNVOTE);
     }
 
     public responder(comentario: Comentario): void {
@@ -79,7 +97,22 @@ export class Comentario implements Notificavel {
                 case TipoEvento.UPVOTE:
                     obs.onUpvoteRecebido(this);
                     break;
+                case TipoEvento.DOWNVOTE:
+                    obs.onDownvoteRecebido(this);
+                    break;
             }
         }
+    }
+
+    public toJSON(): object {
+        return {
+            id: this.id,
+            texto: this.texto,
+            dataCriacao: this.dataCriacao,
+            contadorCurtidas: this.contadorCurtidas,
+            contadorDislikes: this.contadorDislikes,
+            topicosSalvosCount: this.topicosSalvos.length,
+            observadoresCount: this.observadores.length,
+        };
     }
 }
